@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en" ng-app="userApp" class="ng-cloak">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://opensource.keycdn.com/fontawesome/4.7.0/font-awesome.min.css" integrity="sha384-dNpIIXE8U05kAbPhy3G1cz+yZmTzA6CY8Vg/u2L9xRnHjJiAK76m2BIEaSEV+/aU" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/style.css">
+    <title>Document</title>
+</head>
+    <body>
+        <div ng-controller="userCtrl">
+            <div ng-controller="paginationCtrl">
+                <header class="page-header">
+                    <div class="container-fluid">
+                        <div class="page-header-content v-center">
+                            <h1 class="page-header--heading">
+                                <span class="glyphicon glyphicon-list"></span><span class="page-header--text">User List</span>
+                            </h1>
+                            <form class="search-form">
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <div class="input-group-addon"><i class="glyphicon glyphicon-search"></i></div>
+                                        <input type="text" class="form-control" placeholder="Find User..." ng-model="searchUser.name.first">
+                                    </div>
+                                </div>
+                            </form>
+                            <div ng-controller="ModalDemoCtrl as $ctrl" class="modal-demo">
+                                <script type="text/ng-template" id="myModalContent.html">
+                                    <div class="modal-header">
+                                        <h3 class="modal-title" id="modal-title">Gender of users</h3>
+                                    </div>
+                                    <div class="modal-body" id="modal-body">
+                                        <div ng-controller="PieCtrl">
+                                            <canvas id="pie" class="chart chart-pie" chart-data="data" chart-labels="labels" chart-options="options">
+                                            </canvas>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button class="btn btn-primary" type="button" ng-click="$ctrl.ok()">OK</button>
+                                    </div>
+                                </script>
+                                <button type="button" class="btn btn-info" ng-click="$ctrl.open()">Show Chart</button>
+                            </div><!-- ModalDemoCtrl -->
+                        </div>
+                    </div>
+                </header><!-- header -->
+
+                <div class="container-fluid">
+                    <div ng-controller="AccordionCtrl">
+                        <div class="panel panel-default panel-custom">
+                            <div class="panel-body panel-body-custom v-center">
+                                <div class="user-panel-heading"><h4 class="text-center panel-heading-custom">First name</h4></div>
+                                <div class="user-panel-heading"><h4 class="text-center panel-heading-custom">Last name</h4></div>
+                                <div class="user-panel-heading"><h4 class="text-center panel-heading-custom">Username</h4></div>
+                                <div class="user-panel-heading"><h4 class="text-center panel-heading-custom">Phone</h4></div>
+                                <div class="user-panel-heading"><h4 class="text-center panel-heading-custom">Location</h4></div>
+                            </div>
+                        </div>
+
+                        <uib-accordion close-others="oneAtATime">
+                            <uib-accordion-group ng-repeat="user in users | filter:searchUser | startFrom:currentPage*pageSize | limitTo:pageSize" is-open="user.open">
+                                <uib-accordion-heading>
+                                    <div class="container-fluid">
+                                        <div class="user-panel-container  v-center">
+                                            <div class="user-panel-img">
+                                                <img class="img-round img-round-thumb" src="{{user.picture.thumbnail}}" alt="thumbnail of user">
+                                                <img class="img-round img-round-medium" src="{{user.picture.medium}}" alt="thumbnail of user">
+                                            </div>
+                                            <div class="user-panel"><div class="user-panel-label">First name: </div>{{user.name.first}}</div>
+                                            <div class="user-panel"><div class="user-panel-label">Last name: </div>{{user.name.last}}</div>
+                                            <div class="user-panel"><div class="user-panel-label">Username: </div>{{user.login.username}}</div>
+                                            <div class="user-panel"><div class="user-panel-label">Phone: </div>{{user.phone}}</div>
+                                            <div class="user-panel"><div class="user-panel-label">Location: </div>{{user.location.state}}</div>
+                                            <div class="text-right user-panel-icon">
+                                                <i class="glyphicon" ng-class="{'glyphicon-minus':user.open,'glyphicon-plus':!user.open }"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </uib-accordion-heading>
+                                <div>
+                                    <div class="container-fluid">
+                                        <div class="user-panel-collapsed">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <h2>{{user.name.first}} {{user.name.last}} <span><i class="fa" ng-class="{'fa-male':user.gender == 'male', 'fa-female':user.gender == 'female'}" aria-hidden="true"></i></span></h2>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                <div><strong>Username:</strong> {{user.login.username}}</div>
+                                                <div><strong>Registered date:</strong> {{user.registered | date : format : timezone}}</div>
+                                                <div><strong>Email:</strong> {{user.email}}</div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div><strong>Location:</strong> {{user.location.city}}, {{user.location.street}}</div>
+                                                <div><strong>Birthday:</strong> {{user.dob}}</div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div><strong>Phone:</strong> {{user.phone}}</div>
+                                                <div><strong>Cell:</strong> {{user.cell}}</div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <img class="img-round img-round-big" src="{{user.picture.large}}" alt="image of user">
+                                            </div>
+                                        </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </uib-accordion-group>
+                        </uib-accordion>
+
+                    </div><!-- AccordionCtrl -->
+                    <div class="pagination-container">
+                        <button class="btn btn-info" ng-disabled="currentPage == 0" ng-click="currentPage=currentPage-1">
+                            Previous
+                        </button>
+                        {{currentPage+1}}/{{numberOfPages()}}
+                        <button class="btn btn-info" ng-disabled="currentPage >= getData().length/pageSize - 1" ng-click="currentPage=currentPage+1">
+                            Next
+                        </button>
+                    </div>
+                </div><!-- container-fluid -->
+            </div><!-- paginationController -->
+        </div><!-- userController -->
+
+        <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.6.1/angular.js"></script>
+        <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.6.1/angular-animate.js"></script>
+        <script src="//angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.14.3.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.js"></script>
+        <script src="js/libs/angular-chart.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.js"></script>
+        <script src="js/app.js"></script>
+    </body>
+</html>
